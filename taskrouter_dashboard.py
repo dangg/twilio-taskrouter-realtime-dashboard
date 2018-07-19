@@ -59,10 +59,10 @@ def sync_taskrouter_statistics():
     stats['startTime'] = statistics.cumulative["start_time"]
     stats['endTime'] = statistics.cumulative["end_time"]
 
-    new_data = {'Data': json.dumps(stats)}
-    print('Workspace Statistics: ' + json.dumps(new_data, indent=2))
     sync_document = 'SyncTaskRouterStats'
-    url = 'https://sync.twilio.com/v1/Services/' + twilio_sync_service_id + '/Documents/' + sync_document
+    new_data = {'Data': json.dumps(stats), 'UniqueName': sync_documents}
+    print('Workspace Statistics: ' + json.dumps(new_data, indent=2))
+    url = 'https://sync.twilio.com/v1/Services/' + twilio_sync_service_id + '/Documents'
     response = requests.request("POST", url, data=new_data, auth=HTTPBasicAuth(twilio_account_sid, twilio_auth_token))
     print(response.text)
     return (response.text)
@@ -76,10 +76,10 @@ def taskrouter_event():
     if (request_dict['EventType'] == 'reservation.accepted' or request_dict['EventType'] == 'reservation.created'):
         task_worker[request_dict['TaskSid']] = request_dict['WorkerName']
 
-    new_data = {'Data': json.dumps(request_dict)}
-    print(new_data)
     sync_document = 'SyncTaskRouterEvents'
-    url = 'https://sync.twilio.com/v1/Services/' + twilio_sync_service_id + '/Documents/' + sync_document
+    new_data = {'Data': json.dumps(request_dict), 'UniqueName': sync_documents}
+    print(new_data)
+    url = 'https://sync.twilio.com/v1/Services/' + twilio_sync_service_id + '/Documents'
     response = requests.request("POST", url, data=new_data, auth=HTTPBasicAuth(twilio_account_sid, twilio_auth_token))
     print(response.text)
 
